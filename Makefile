@@ -7,14 +7,14 @@
 PROJECT_DIR := $(shell dirname $(realpath $(lastword $(MAKEFILE_LIST))))
 BUCKET = [OPTIONAL] your-bucket-for-syncing-data (do not include 's3://')
 PROFILE = default
-PROJECT_NAME = PD test
+PROJECT_NAME = PDtest
 PYTHON_INTERPRETER = python3
 
-#ifeq (,$(shell which conda))
-#HAS_CONDA=False
-#else
-#HAS_CONDA=True
-#endif
+ifeq (,$(shell which conda))
+HAS_CONDA=False
+else
+HAS_CONDA=True
+endif
 
 HAS_CONDA=False
 #################################################################################
