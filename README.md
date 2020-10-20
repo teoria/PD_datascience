@@ -5,6 +5,7 @@ PD Data Products
 - Exploratory data analysis
 - User segmentation
 - Data insights
+- User classifier model
 
 Project Organization
 ------------
@@ -57,16 +58,32 @@ Project Organization
 
 --------
 ## Usage
-Unzip the `Datasets.....zip` file into `/data/raw`
+Unzip the `Datasets___.zip` file into `/data/raw`
 
 ``` 
 $ make create_environment 
+```
+Activate the environment
+```
 $ source activate PDtest
+```
+Install dependencies
+```
 $ make requirements
+```
+Create tidy datasets
+```
 $ make data
+```
+Create ABT dataset
+```
 $ make features
+```
+Create classifier model in `/models`
+```
 $ make model
 ```
+
 
 ## Notebooks
 Notebooks folder  `/notebooks`
