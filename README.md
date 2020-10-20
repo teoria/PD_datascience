@@ -63,6 +63,7 @@ Unzip the `Datasets.....zip` file into `/data/raw`
 $ make create_environment 
 $ make data
 $ make features
+$ make model
 ```
 
 ## Notebooks
