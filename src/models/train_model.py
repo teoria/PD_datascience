@@ -7,13 +7,16 @@ from pathlib import Path
 from dotenv import find_dotenv, load_dotenv
 import pandas as pd
 
-from sklearn.ensemble import RandomForestRegressor
+from sklearn.ensemble import RandomForestClassifier
 
 from sklearn.model_selection import train_test_split
 from sklearn.cluster import KMeans
 from sklearn.preprocessing import StandardScaler
 from collections import Counter
-
+from sklearn.metrics import confusion_matrix
+import matplotlib.pyplot as plt
+import numpy as np
+import seaborn as sns
 from joblib import dump, load
 
 # %% Kmeans
@@ -64,16 +67,16 @@ def main(input_filepath, output_filepath):
     df_train_full.index = df_train_full["Id"]
     df_train_full.head()
     best_features = ["Id",
-                     'fileview_count',
-                     'payment_total',
+                      'fileview_count',
                      'session_count',
                      'session_rate',
                      'fileview_rate',
+                     'usage_weekly_mean',
                      'usage_weekly_count',
-                     'subject_count',
+                     'payment_total',
                      'payment_monthly',
                      'cancelation_count',
-                     'usage_weekly_mean']
+                     'mobile']
     df_train_full = df_train_full[best_features]
     ### Clusterização com Kmeans
 
@@ -108,23 +111,32 @@ def main(input_filepath, output_filepath):
     #%%
 
     X_train, X_valid, y_train, y_valid = train_test_split(X, target, test_size = 0.8, random_state = 42)
-    rf = RandomForestRegressor(n_estimators = 200,
+    rf = RandomForestClassifier(n_estimators = 200,
                                n_jobs = -1,
-                               oob_score = True,
-                               bootstrap = True,
+                                class_weight='balanced_subsample',
                                random_state = 42)
     rf.fit(X_train, y_train)
-    print( f'R2_train = {rf.score(X_train, y_train)}' )
+    print( f'score_train = {rf.score(X_train, y_train)}' )
 
     #%%
 
-    print( f'R2_validation = {rf.score(X_valid, y_valid)}'  )
+    print( f'score_validation = {rf.score(X_valid, y_valid)}'  )
 
     path = Path(__file__).resolve().parents[2]
 
     dump(rf, f'{path}/models/user_cluster.joblib')
     print( f'model saved in = {path}/models'  )
 
+    y_pred = rf.predict(X_valid)
+    print(y_valid.values)
+    print(y_pred)
+    cf_matrix = confusion_matrix(y_valid.values, y_pred.round())
+    # plt.figure(figsize=(10,7))
+    sns.set(font_scale=1.4)  # for label size
+    #sns.heatmap(df_cm, annot=True, annot_kws={"size": 4})  # font size
+    sns_plot = sns.heatmap(cf_matrix / np.sum(cf_matrix), annot=True,
+                fmt='.2%', cmap='Blues')
+    sns_plot.figure.savefig("output.png")
 
 if __name__ == '__main__':
     log_fmt = '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
