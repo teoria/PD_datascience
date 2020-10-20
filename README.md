@@ -61,6 +61,8 @@ Unzip the `Datasets.....zip` file into `/data/raw`
 
 ``` 
 $ make create_environment 
+$ source activate PDtest
+$ make requirement
 $ make data
 $ make features
 $ make model
