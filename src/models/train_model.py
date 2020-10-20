@@ -8,7 +8,7 @@ from dotenv import find_dotenv, load_dotenv
 import pandas as pd
 
 from sklearn.ensemble import RandomForestClassifier
-from sklearn.metrics import f1_score
+from sklearn.metrics import f1_score, roc_auc_score
 
 from sklearn.model_selection import train_test_split
 from sklearn.cluster import KMeans
@@ -129,9 +129,14 @@ def main(input_filepath, output_filepath):
     print( f'model saved in = {path}/models'  )
 
     y_pred = rf.predict(X_valid)
+    y_pred_prob = rf.predict_proba(X_valid)
     print(y_valid.values)
     print(y_pred)
+    df = pd.DataFrame(y_pred_prob)
+    df.columns = ['a', 'b']
+    print(df)
     print( f'f1_score_validation = {f1_score(y_valid.values, y_pred.round())}'  )
+    print( f'roc_curve_validation = {roc_auc_score(y_valid.values,df.b)}'  )
 
     cf_matrix = confusion_matrix(y_valid.values, y_pred.round())
     # plt.figure(figsize=(10,7))
